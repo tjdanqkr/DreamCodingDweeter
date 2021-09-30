@@ -26,18 +26,21 @@ const Tweets = memo(({ tweetService, username, addable }) => {
     tweetService
       .deleteTweet(tweetId)
       .then(() =>
-        setTweets((tweets) => tweets.filter((tweet) => tweet.id !== tweetId))
+        setTweets((tweets) => tweets.filter((tweet) => tweet.id !== tweetId)),
       )
       .catch((error) => setError(error.toString()));
 
   const onUpdate = (tweetId, text) =>
     tweetService
       .updateTweet(tweetId, text)
-      .then((updated) =>
-        setTweets((tweets) =>
-          tweets.map((item) => (item.id === updated.id ? updated : item))
-        )
-      )
+      .then((updated) => {
+        const updateTweets = tweets.map((item) => {
+          if (item.id === updated.id) return updated;
+          else return item;
+        });
+        setTweets(updateTweets);
+        console.log(tweets);
+      })
       .catch((error) => error.toString());
 
   const onUsernameClick = (tweet) => history.push(`/${tweet.username}`);
@@ -59,8 +62,8 @@ const Tweets = memo(({ tweetService, username, addable }) => {
         />
       )}
       {error && <Banner text={error} isAlert={true} transient={true} />}
-      {tweets.length === 0 && <p className='tweets-empty'>No Tweets Yet</p>}
-      <ul className='tweets'>
+      {tweets.length === 0 && <p className="tweets-empty">No Tweets Yet</p>}
+      <ul className="tweets">
         {tweets.map((tweet) => (
           <TweetCard
             key={tweet.id}

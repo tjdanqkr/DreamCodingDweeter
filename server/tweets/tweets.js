@@ -41,7 +41,7 @@ let initailizeTweets = [
     text: '드림코딩에서 강의 들으면 너무 좋으다3',
     createdAt: '2021-05-09T04:20:57.000Z',
     name: 'ㅇㅇ',
-    username: 'oo',
+    username: 'ellie',
     url: 'https://widgetwhats.com/app/uploads/2019/11/free-profile-photo-whatsapp-1.png',
   },
   {
@@ -96,9 +96,9 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
   const { body } = req;
-  const insertTweet = { id: initailizeTweets.length + 1, ...body };
+  const insertTweet = { ...body, id: initailizeTweets.length + 1 };
   initailizeTweets.push(insertTweet);
-  res.status(201).end();
+  res.status(200).send(insertTweet);
 });
 
 router.delete('/:id', (req, res) => {
@@ -113,13 +113,23 @@ router.delete('/:id', (req, res) => {
 router.put('/:id', (req, res) => {
   const { body, params } = req;
   const { id } = params;
+  const { text } = body;
   const updateIndex = initailizeTweets.findIndex((tweet) => tweet.id == id);
   const statusCode = updateIndex >= 0 ? 200 : 202;
   if (statusCode === 200) {
-    const updateTweet = { id: Number(id), ...body };
+    console.log(text);
+    const updateTweet = {
+      ...initailizeTweets[updateIndex],
+      id: Number(id),
+      text: text,
+    };
     initailizeTweets.splice(updateIndex, 1, updateTweet);
+    console.log(updateTweet);
   }
-  res.status(statusCode).end();
+
+  res
+    .status(statusCode)
+    .send(statusCode === 200 ? initailizeTweets[updateIndex] : null);
 });
 
 router.get('/:id', (req, res) => {

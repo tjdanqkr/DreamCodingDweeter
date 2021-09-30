@@ -9,7 +9,7 @@ import tweetsRouter from './tweets/tweets.js';
 const app = express();
 
 const corsOption = {
-  origin: ['http://127.0.0.1:3000'],
+  origin: ['http://localhost:3000'],
   optionsSuccessStatus: 200,
   credentials: true, //Access-Control-Allow-Credentials: true
 };

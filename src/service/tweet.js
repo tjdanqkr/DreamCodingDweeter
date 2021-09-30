@@ -1,3 +1,4 @@
+import axios from 'axios';
 export default class TweetService {
   tweets = [
     {
@@ -9,11 +10,15 @@ export default class TweetService {
       url: 'https://widgetwhats.com/app/uploads/2019/11/free-profile-photo-whatsapp-1.png',
     },
   ];
-
+  constructor() {
+    axios.defaults.baseURL = 'http://localhost:8080';
+  }
   async getTweets(username) {
-    return username
-      ? this.tweets.filter((tweet) => tweet.username === username)
-      : this.tweets;
+    const response = await axios.get(
+      `/tweets${username ? `?username=${username}` : ''}`,
+    );
+    const tweets = response.data;
+    return tweets;
   }
 
   async postTweet(text) {
@@ -24,20 +29,22 @@ export default class TweetService {
       username: 'ellie',
       text,
     };
-    this.tweets.push(tweet);
-    return tweet;
+    const response = await axios.post(`/tweets`, tweet);
+
+    if (response.status === 200) return response.data;
+    else return;
   }
 
   async deleteTweet(tweetId) {
-    this.tweets = this.tweets.filter((tweet) => tweet.id !== tweetId);
+    if (!tweetId) return;
+    const response = await axios.delete(`/tweets/${tweetId}`);
+    // if (response.status === 200) this.getTweets('');
   }
 
   async updateTweet(tweetId, text) {
-    const tweet = this.tweets.find((tweet) => tweet.id === tweetId);
-    if (!tweet) {
-      throw new Error('tweet not found!');
-    }
-    tweet.text = text;
-    return tweet;
+    if (!tweetId) return;
+    const params = { text };
+    const response = await axios.put(`/tweets/${tweetId}`, params);
+    if (response.status === 200) return response.data;
   }
 }
