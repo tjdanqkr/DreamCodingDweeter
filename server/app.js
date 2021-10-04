@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import tweetsRouter from './tweets/tweets.js';
+// import tweetsRouter from './controller/tweetsController.js';
 
 const app = express();
 
